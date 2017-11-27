@@ -82,6 +82,12 @@ defmodule WormholeTest do
     refute_receive({_, :foo})
   end
 
+  test "process dictionary copied to process" do
+    Process.put :foo, :bar
+    callback = fn -> Process.get(:foo) end
+    assert Wormhole.capture(callback) == {:ok, :bar}
+  end
+
   def foo_function do :foo end
 
   def bar_function(arg) do {:bar, arg} end

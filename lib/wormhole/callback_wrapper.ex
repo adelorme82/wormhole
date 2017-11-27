@@ -3,8 +3,12 @@ defmodule Wormhole.CallbackWrapper do
   @doc """
   Prevent callback from generating crush report.
   """
-  def wrap(callback, crush_report) do
-    fn -> callback |> catch_errors(crush_report) end
+  def wrap(callback, crush_report, process_dict) do
+    fn ->
+      process_dict
+      |> Enum.each(fn {key, value} -> Process.put(key, value) end)
+
+      callback |> catch_errors(crush_report) end
   end
 
 
